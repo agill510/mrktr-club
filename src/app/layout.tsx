@@ -9,7 +9,7 @@ const archivo = Archivo({
 })
 
 export const metadata: Metadata = {
-  title: 'mrkt.ee — Network with Marketing People',
+  title: 'mrktr.club — Network with Marketing People',
   description: 'A private community where marketing students, alumni, and professionals can connect, share, and learn from each other.',
 }
 
