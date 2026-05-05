@@ -1,0 +1,262 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.section {
+  padding: 100px 100px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+}
+
+.reversed { direction: rtl; }
+.reversed > * { direction: ltr; }
+
+/* ── TEXT ─────────────────────────────── */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+
+.title {
+  font-size: clamp(36px, 3.5vw, 56px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+}
+
+.desc {
+  font-size: clamp(15px, 1.2vw, 18px);
+  color: rgba(255,255,255,.45);
+  line-height: 1.75;
+  font-weight: 400;
+  max-width: 480px;
+}
+
+/* ── SHARED MOCKUP ────────────────────── */
+.mockup {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+
+.mockupHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mockupTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,.6);
+}
+
+.mockupCount {
+  font-size: 12px;
+  color: rgba(255,255,255,.25);
+}
+
+/* ── CONNECT ──────────────────────────── */
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.groupCard {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.groupCard:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.18); }
+
+.groupCardIcon { font-size: 32px; line-height: 1; }
+
+.groupCardName {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255,255,255,.88);
+}
+
+.groupCardPreview {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.groupCardCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.25);
+  margin-top: 4px;
+}
+
+/* ── SHARE ────────────────────────────── */
+.jobList { padding: 8px 0; }
+
+.jobRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  transition: background .15s;
+}
+.jobRow:last-child { border-bottom: none; }
+.jobRow:hover { background: rgba(255,255,255,.04); }
+
+.jobLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.jobLogo {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.jobRole {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  margin-bottom: 2px;
+}
+
+.jobMeta {
+  font-size: 12px;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 3px;
+}
+
+.jobMembers {
+  font-size: 11px;
+  color: rgba(255,255,255,.22);
+}
+
+.jobActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btnApply {
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: none;
+  background: #fff;
+  color: #0D0F12;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btnApply:hover { background: #ebebeb; }
+
+.btnReferral {
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: transparent;
+  color: rgba(255,255,255,.65);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btnReferral:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+
+/* ── LEARN ────────────────────────────── */
+.eventList { padding: 8px 0; }
+
+.eventRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  transition: background .15s;
+}
+.eventRow:last-child { border-bottom: none; }
+.eventRow:hover { background: rgba(255,255,255,.04); }
+
+.eventAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.eventInfo { flex: 1; min-width: 0; }
+
+.eventTopic {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  margin-bottom: 3px;
+}
+
+.eventSpeaker {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 3px;
+}
+
+.eventDate {
+  font-size: 11px;
+  color: rgba(255,255,255,.22);
+}
+
+.eventType {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: .3px;
+}
+
+/* ── RESPONSIVE ───────────────────────── */
+@media (max-width: 900px) {
+  .section { padding: 64px 28px; }
+  .inner { grid-template-columns: 1fr; gap: 48px; }
+  .reversed { direction: ltr; }
+}

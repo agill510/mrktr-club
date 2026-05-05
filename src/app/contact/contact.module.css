@@ -1,0 +1,75 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.4);
+  letter-spacing: 0.3px;
+}
+
+.field input,
+.field textarea {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 13px 16px;
+  color: #fff;
+  font-size: 15px;
+  font-family: var(--font-archivo), sans-serif;
+  outline: none;
+  transition: border-color .15s;
+  resize: none;
+  width: 100%;
+}
+.field input::placeholder,
+.field textarea::placeholder { color: rgba(255,255,255,.2); }
+.field input:focus,
+.field textarea:focus { border-color: rgba(255,255,255,.3); }
+
+.submit {
+  align-self: flex-start;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: none;
+  background: #fff;
+  color: #0D0F12;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-archivo), sans-serif;
+  transition: background .2s, transform .15s;
+  margin-top: 4px;
+}
+.submit:hover { background: #ebebeb; transform: translateY(-1px); }
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 20px 24px;
+  background: rgba(34,197,94,.08);
+  border: 1px solid rgba(34,197,94,.2);
+  border-radius: 14px;
+}
+
+.check {
+  font-size: 20px;
+  color: #22c55e;
+}
+
+.success p {
+  font-size: 15px;
+  color: rgba(255,255,255,.6);
+}

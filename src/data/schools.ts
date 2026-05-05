@@ -1,0 +1,27 @@
+const schools = [
+  'Harvard University', 'MIT', 'Stanford University', 'Yale University',
+  'Princeton University', 'Columbia University', 'University of Pennsylvania',
+  'Duke University', 'Northwestern University', 'Dartmouth College',
+  'Brown University', 'Cornell University', 'Vanderbilt University',
+  'Rice University', 'Notre Dame', 'Georgetown University',
+  'UCLA', 'UC Berkeley', 'USC', 'UC San Diego', 'UC Davis',
+  'University of Michigan', 'University of Virginia', 'UNC Chapel Hill',
+  'NYU', 'Boston University', 'Northeastern University', 'Tufts University',
+  'Emory University', 'Tulane University', 'Wake Forest University',
+  'Georgia Tech', 'University of Georgia', 'University of Florida',
+  'Florida State University', 'University of Texas at Austin',
+  'Texas A&M', 'Ohio State University', 'Penn State',
+  'University of Illinois', 'Purdue University', 'Indiana University',
+  'University of Wisconsin', 'University of Minnesota', 'University of Iowa',
+  'University of Washington', 'University of Oregon', 'Arizona State University',
+  'University of Arizona', 'University of Colorado Boulder',
+  'University of Miami', 'Syracuse University', 'Fordham University',
+  'University of Toronto', 'McGill University', 'University of British Columbia',
+  'Queen\'s University', 'Western University', 'McMaster University',
+  'Oxford University', 'Cambridge University', 'London School of Economics',
+  'Imperial College London', 'University of Edinburgh', 'King\'s College London',
+  'HEC Paris', 'Sciences Po', 'Bocconi University', 'IE Business School',
+  'National University of Singapore', 'University of Melbourne',
+]
+
+export default schools

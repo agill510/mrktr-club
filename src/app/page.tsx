@@ -1,66 +1,70 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { useState, useRef, useEffect } from 'react'
+import Header from '@/components/Header'
+import ChatWindow from '@/components/ChatWindow'
+import LogosStrip from '@/components/LogosStrip'
+import SignupModal from '@/components/SignupModal'
+import styles from './page.module.css'
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false)
+  const footerRef = useRef<HTMLElement>(null)
+  const [footerVisible, setFooterVisible] = useState(false)
+
+  useEffect(() => {
+    const el = footerRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setFooterVisible(true) },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Header onRegister={() => setModalOpen(true)} />
+
+      <main>
+        <div className={styles.hero}>
+          <div className={`${styles.heroLeft} anim-hero-left`}>
+            <h1 className={styles.h1}>
+              Network with<br />
+              <span className={styles.griffiths}>Marketing people</span>
+              <span className={styles.right}>right.</span>
+            </h1>
+            <p className={styles.sub}>
+              A private community where marketing students, alumni, and professionals
+              can connect, share, and learn from each other — without the noise of LinkedIn.
+            </p>
+          </div>
+
+          <div className={`${styles.heroRight} anim-hero-right`}>
+            <ChatWindow />
+            <div className={styles.ctaWrap}>
+              <button className={styles.ctaBtn} onClick={() => setModalOpen(true)}>
+                Join the community →
+              </button>
+            </div>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <LogosStrip />
       </main>
-    </div>
-  );
+
+      <div className={styles.divider} />
+
+      <footer ref={footerRef} className={`${styles.footer} ${footerVisible ? styles.footerVisible : ''}`}>
+        <a href="/terms" className={styles.footerLink}>Terms of Service</a>
+        <div className={styles.dot} />
+        <a href="/privacy" className={styles.footerLink}>Privacy Policy</a>
+        <div className={styles.dot} />
+        <a href="/contact" className={styles.footerLink}>Contact</a>
+      </footer>
+
+      <SignupModal open={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
+  )
 }
