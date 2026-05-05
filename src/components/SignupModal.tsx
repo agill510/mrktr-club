@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import styles from './SignupModal.module.css'
-import { supabase } from '@/lib/supabase'
 
 interface Props {
   open: boolean
@@ -137,16 +136,20 @@ export default function SignupModal({ open, onClose }: Props) {
             {step === 2 && (
               <form onSubmit={async (e) => {
               e.preventDefault()
-              await supabase.from('signups').insert({
-                role,
-                school:     role === 'student' ? school : null,
-                grad_year:  role === 'student' ? gradYear : null,
-                company:    role === 'professional' ? company : null,
-                job_title:  role === 'professional' ? jobTitle : null,
-                first_name: firstName,
-                last_name:  lastName,
-                email,
-                phone,
+              await fetch('/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  role,
+                  school:     role === 'student' ? school : null,
+                  grad_year:  role === 'student' ? gradYear : null,
+                  company:    role === 'professional' ? company : null,
+                  job_title:  role === 'professional' ? jobTitle : null,
+                  first_name: firstName,
+                  last_name:  lastName,
+                  email,
+                  phone,
+                }),
               })
               go(3, 'forward')
             }}>
