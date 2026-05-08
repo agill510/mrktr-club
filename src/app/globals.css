@@ -1,4 +1,18 @@
 @font-face {
+  font-family: 'FantasqueSansMono';
+  src: url('/fonts/FantasqueSansMono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FantasqueSansMono';
+  src: url('/fonts/FantasqueSansMono-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Griffiths';
   src: url('/fonts/griffiths.woff2') format('woff2'),
        url('/fonts/griffiths.woff') format('woff');

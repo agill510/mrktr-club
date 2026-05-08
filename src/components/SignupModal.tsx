@@ -79,7 +79,7 @@ export default function SignupModal({ open, onClose }: Props) {
             {/* ── STEP 0: role select ── */}
             {step === 0 && (
               <>
-                <p className={styles.title}>Join mrkt.ee</p>
+                <p className={styles.title}>Join mrktr.club</p>
                 <p className={styles.sub}>I am a...</p>
                 <div className={styles.roleGrid}>
                   <button className={styles.roleCard} onClick={() => { setRole('student'); go(1, 'forward') }}>
@@ -185,7 +185,7 @@ export default function SignupModal({ open, onClose }: Props) {
                   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
                 </div>
                 <h3>You&apos;re on the list.</h3>
-                <p>We&apos;ll be in touch with access soon.<br />Welcome to mrkt.ee.</p>
+                <p>We&apos;ll be in touch with access soon.<br />Welcome to mrktr.club.</p>
               </div>
             )}
 

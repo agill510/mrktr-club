@@ -15,10 +15,11 @@
 
 .h1 {
   font-size: clamp(56px, 7.5vw, 110px);
-  font-weight: 800;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
   color: #fff;
   line-height: 0.93;
-  letter-spacing: -3px;
+  letter-spacing: -4px;
   margin-bottom: 28px;
 }
 
@@ -57,7 +58,7 @@
   font-size: 17px;
   font-weight: 700;
   padding: 18px 36px;
-  border-radius: 14px;
+  border-radius: 20px;
   border: none;
   background: #fff;
   color: #0D0F12;

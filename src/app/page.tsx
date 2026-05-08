@@ -5,10 +5,12 @@ import Header from '@/components/Header'
 import ChatWindow from '@/components/ChatWindow'
 import LogosStrip from '@/components/LogosStrip'
 import SignupModal from '@/components/SignupModal'
+import LoginModal from '@/components/LoginModal'
 import styles from './page.module.css'
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
+  const [loginOpen, setLoginOpen] = useState(false)
   const footerRef = useRef<HTMLElement>(null)
   const [footerVisible, setFooterVisible] = useState(false)
 
@@ -25,7 +27,7 @@ export default function Home() {
 
   return (
     <>
-      <Header onRegister={() => setModalOpen(true)} />
+      <Header onRegister={() => setModalOpen(true)} onLogin={() => setLoginOpen(true)} />
 
       <main>
         <div className={styles.hero}>
@@ -65,6 +67,7 @@ export default function Home() {
       </footer>
 
       <SignupModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </>
   )
 }
