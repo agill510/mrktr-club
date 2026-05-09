@@ -49,7 +49,8 @@ export default function AdminPage() {
     supabase.from('videos').select('*').order('created_at').then(({ data }) => data && setVideos(data))
   }, [user])
 
-  if (loading || !user || user.email !== ADMIN_EMAIL) return null
+  if (!loading && (!user || user.email !== ADMIN_EMAIL)) return null
+  if (loading) return <div style={{ minHeight: '100vh', background: '#07090e' }} />
 
   // ── EVENTS ──
   const saveEvent = async () => {
