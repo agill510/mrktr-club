@@ -18,9 +18,6 @@ export default function Home() {
   const footerRef = useRef<HTMLElement>(null)
   const [footerVisible, setFooterVisible] = useState(false)
 
-  useEffect(() => {
-    if (user) router.replace('/dashboard')
-  }, [user, router])
 
   useEffect(() => {
     const el = footerRef.current
