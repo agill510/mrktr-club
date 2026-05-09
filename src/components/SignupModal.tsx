@@ -148,7 +148,7 @@ export default function SignupModal({ open, onClose }: Props) {
               const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: 'https://www.mrktr.club/dashboard?welcome=true' },
+                options: { emailRedirectTo: 'https://www.mrktr.club/auth/callback' },
               })
               if (error) { setSignupError(error.message); setSubmitting(false); return }
 
