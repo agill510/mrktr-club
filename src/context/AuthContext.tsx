@@ -14,10 +14,15 @@ const AuthContext = createContext<AuthContextType>({ user: null, profileName: ''
 
 async function fetchProfileName(userId: string): Promise<string> {
   const timeout = new Promise<string>(resolve => setTimeout(() => resolve(''), 3000))
-  const query = supabase.from('profiles').select('name').eq('id', userId).single()
-    .then(({ data }) => data?.name ?? '')
-    .catch(() => '')
-  return Promise.race([query, timeout])
+  const query = new Promise<string>(async resolve => {
+    try {
+      const { data } = await supabase.from('profiles').select('name').eq('id', userId).single()
+      resolve(data?.name ?? '')
+    } catch {
+      resolve('')
+    }
+  })
+  return Promise.race<string>([query, timeout])
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
