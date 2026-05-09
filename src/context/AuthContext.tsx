@@ -13,8 +13,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({ user: null, profileName: '', loading: true })
 
 async function fetchProfileName(userId: string): Promise<string> {
-  const { data } = await supabase.from('profiles').select('name').eq('id', userId).single()
-  return data?.name ?? ''
+  const timeout = new Promise<string>(resolve => setTimeout(() => resolve(''), 3000))
+  const query = supabase.from('profiles').select('name').eq('id', userId).single()
+    .then(({ data }) => data?.name ?? '')
+    .catch(() => '')
+  return Promise.race([query, timeout])
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
