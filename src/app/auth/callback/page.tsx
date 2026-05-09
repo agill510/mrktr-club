@@ -8,13 +8,22 @@ export default function AuthCallback() {
   const router = useRouter()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.replace('/dashboard?welcome=true')
-      } else {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.replace('/auth/reset-password')
+      } else if (event === 'SIGNED_IN' && session) {
+        const type = new URLSearchParams(window.location.hash.slice(1)).get('type')
+        if (type === 'signup') {
+          router.replace('/dashboard?welcome=true')
+        } else {
+          router.replace('/dashboard')
+        }
+      } else if (!session) {
         router.replace('/')
       }
     })
+
+    return () => subscription.unsubscribe()
   }, [router])
 
   return (
