@@ -1,6 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/context/AuthContext'
 import styles from './LoginModal.module.css'
 
 interface Props {
@@ -9,8 +12,16 @@ interface Props {
 }
 
 export default function LoginModal({ open, onClose }: Props) {
-  const [email, setEmail] = useState('')
+  const router = useRouter()
+  const { user } = useAuth()
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
+
+  useEffect(() => {
+    if (open && user) { onClose(); router.push('/dashboard') }
+  }, [open, user, onClose, router])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -36,7 +47,16 @@ export default function LoginModal({ open, onClose }: Props) {
         <p className={styles.title}>Welcome back</p>
         <p className={styles.sub}>Log in to your mrktr.club account</p>
 
-        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+        <form className={styles.form} onSubmit={async (e) => {
+            e.preventDefault()
+            setError('')
+            setLoading(true)
+            const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+            setLoading(false)
+            if (err) { setError(err.message); return }
+            onClose()
+            router.push('/dashboard')
+          }}>
           <div className={styles.field}>
             <label>Email</label>
             <input
@@ -57,8 +77,9 @@ export default function LoginModal({ open, onClose }: Props) {
               required
             />
           </div>
-          <button type="submit" className={styles.cta} disabled={!email || !password}>
-            Log in →
+          {error && <p className={styles.error}>{error}</p>}
+          <button type="submit" className={styles.cta} disabled={!email || !password || loading}>
+            {loading ? 'Logging in…' : 'Log in →'}
           </button>
         </form>
       </div>

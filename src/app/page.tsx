@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 import Header from '@/components/Header'
 import ChatWindow from '@/components/ChatWindow'
 import LogosStrip from '@/components/LogosStrip'
@@ -9,10 +11,16 @@ import LoginModal from '@/components/LoginModal'
 import styles from './page.module.css'
 
 export default function Home() {
+  const { user, loading } = useAuth()
+  const router = useRouter()
   const [modalOpen, setModalOpen] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
   const footerRef = useRef<HTMLElement>(null)
   const [footerVisible, setFooterVisible] = useState(false)
+
+  useEffect(() => {
+    if (!loading && user) router.replace('/dashboard')
+  }, [user, loading, router])
 
   useEffect(() => {
     const el = footerRef.current
@@ -27,7 +35,7 @@ export default function Home() {
 
   return (
     <>
-      <Header onRegister={() => setModalOpen(true)} onLogin={() => setLoginOpen(true)} />
+      <Header onRegister={() => setModalOpen(true)} onLogin={() => { if (user) { router.push('/dashboard'); return } setLoginOpen(true) }} />
 
       <main>
         <div className={styles.hero}>
