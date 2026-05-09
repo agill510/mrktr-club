@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 import styles from './SignupModal.module.css'
 
 interface Props {
@@ -11,6 +13,7 @@ interface Props {
 type Role = 'student' | 'professional'
 
 export default function SignupModal({ open, onClose }: Props) {
+  const router = useRouter()
   const [step, setStep] = useState(0)
   const [dir, setDir] = useState<'forward' | 'back'>('forward')
   const [animKey, setAnimKey] = useState(0)
@@ -25,6 +28,9 @@ export default function SignupModal({ open, onClose }: Props) {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+  const [signupError, setSignupError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -53,7 +59,7 @@ export default function SignupModal({ open, onClose }: Props) {
     ? school.trim() !== ''
     : company.trim() !== '' && jobTitle.trim() !== ''
 
-  const step2Valid = firstName.trim() !== '' && email.trim() !== ''
+  const step2Valid = firstName.trim() !== '' && email.trim() !== '' && password.length >= 6
 
   return (
     <div
@@ -136,22 +142,31 @@ export default function SignupModal({ open, onClose }: Props) {
             {step === 2 && (
               <form onSubmit={async (e) => {
               e.preventDefault()
-              await fetch('/api/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  role,
-                  school:     role === 'student' ? school : null,
-                  grad_year:  role === 'student' ? gradYear : null,
-                  company:    role === 'professional' ? company : null,
-                  job_title:  role === 'professional' ? jobTitle : null,
-                  first_name: firstName,
-                  last_name:  lastName,
-                  email,
-                  phone,
-                }),
+              setSignupError('')
+              setSubmitting(true)
+
+              const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: { emailRedirectTo: 'https://www.mrktr.club/dashboard?welcome=true' },
               })
-              go(3, 'forward')
+              if (error) { setSignupError(error.message); setSubmitting(false); return }
+
+              if (data.user) {
+                await supabase.from('profiles').insert({
+                  id:    data.user.id,
+                  name:  `${firstName} ${lastName}`.trim(),
+                  email: email,
+                })
+              }
+
+              setSubmitting(false)
+              if (data.session) {
+                onClose()
+                router.push('/dashboard')
+              } else {
+                go(3, 'forward')
+              }
             }}>
                 <p className={styles.stepTitle}>Almost there</p>
 
@@ -173,8 +188,15 @@ export default function SignupModal({ open, onClose }: Props) {
                   <label>Phone</label>
                   <input type="tel" placeholder="+1 (555) 000-0000" value={phone} onChange={e => setPhone(e.target.value)} />
                 </div>
+                <div className={styles.field}>
+                  <label>Password</label>
+                  <input type="password" placeholder="Min. 6 characters" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
+                </div>
 
-                <button type="submit" className={styles.cta}>Submit →</button>
+                {signupError && <p className={styles.error}>{signupError}</p>}
+                <button type="submit" className={styles.cta} disabled={submitting}>
+                  {submitting ? 'Creating account…' : 'Submit →'}
+                </button>
               </form>
             )}
 
@@ -184,8 +206,8 @@ export default function SignupModal({ open, onClose }: Props) {
                 <div className={styles.successIcon}>
                   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
                 </div>
-                <h3>You&apos;re on the list.</h3>
-                <p>We&apos;ll be in touch with access soon.<br />Welcome to mrktr.club.</p>
+                <h3>Check your email.</h3>
+                <p>We sent a confirmation link to <strong>{email}</strong>.<br />Click it to activate your account.</p>
               </div>
             )}
 
