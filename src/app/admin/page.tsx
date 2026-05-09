@@ -49,8 +49,9 @@ export default function AdminPage() {
     supabase.from('videos').select('*').order('created_at').then(({ data }) => data && setVideos(data))
   }, [user])
 
-  if (!loading && (!user || user.email !== ADMIN_EMAIL)) return null
   if (loading) return <div style={{ minHeight: '100vh', background: '#07090e' }} />
+  if (!user) return <div style={{ minHeight: '100vh', background: '#07090e', color: 'rgba(255,255,255,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Helvetica Neue, sans-serif' }}>Not logged in. <a href="/" style={{ color: '#fff', marginLeft: 8 }}>Go home</a></div>
+  if (user.email !== ADMIN_EMAIL) return <div style={{ minHeight: '100vh', background: '#07090e', color: 'rgba(255,255,255,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Helvetica Neue, sans-serif' }}>Access denied ({user.email})</div>
 
   // ── EVENTS ──
   const saveEvent = async () => {
