@@ -19,8 +19,8 @@ export default function Home() {
   const [footerVisible, setFooterVisible] = useState(false)
 
   useEffect(() => {
-    if (!loading && user) router.replace('/dashboard')
-  }, [user, loading, router])
+    if (user) router.replace('/dashboard')
+  }, [user, router])
 
   useEffect(() => {
     const el = footerRef.current
