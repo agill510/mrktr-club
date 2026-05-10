@@ -8,9 +8,9 @@ import ProfileModal, { ProfileSection } from '@/components/ProfileModal'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/context/AuthContext'
 import { supabase } from '@/lib/supabase'
-import { events } from '@/data/events'
-import { communities } from '@/data/communities'
-import { videos } from '@/data/videos'
+import { events as fallbackEvents } from '@/data/events'
+import { communities as fallbackCommunities } from '@/data/communities'
+import { videos as fallbackVideos } from '@/data/videos'
 import styles from './dashboard.module.css'
 
 type TypeFilter = 'all' | 'school' | 'city' | 'company'
@@ -98,6 +98,16 @@ function DashboardInner() {
     await supabase.auth.signOut()
     router.replace('/')
   }
+
+  const [events, setEvents] = useState<typeof fallbackEvents>(fallbackEvents)
+  const [communities, setCommunities] = useState<typeof fallbackCommunities>(fallbackCommunities)
+  const [videos, setVideos] = useState<typeof fallbackVideos>(fallbackVideos)
+
+  useEffect(() => {
+    supabase.from('events').select('*').order('created_at').then(({ data }) => { if (data?.length) setEvents(data as typeof fallbackEvents) })
+    supabase.from('communities').select('*').order('created_at').then(({ data }) => { if (data?.length) setCommunities(data as typeof fallbackCommunities) })
+    supabase.from('videos').select('*').order('created_at').then(({ data }) => { if (data?.length) setVideos(data as typeof fallbackVideos) })
+  }, [])
 
   const [slide, setSlide] = useState(0)
   const [search, setSearch] = useState('')
