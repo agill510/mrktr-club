@@ -31,14 +31,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading]         = useState(true)
 
   useEffect(() => {
+    const fallback = setTimeout(() => setLoading(false), 5000)
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      clearTimeout(fallback)
       const u = session?.user ?? null
       setUser(u)
       if (u) {
         try { setProfileName(await fetchProfileName(u.id)) } catch {}
       }
       setLoading(false)
-    }).catch(() => setLoading(false))
+    }).catch(() => { clearTimeout(fallback); setLoading(false) })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
       const u = session?.user ?? null
