@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import styles from './admin.module.css'
 
-const ADMIN_EMAIL = 'ansingh266@gmail.com'
+const ADMIN_PASSWORD = 'mrktr2026admin'
 
 type Tab = 'events' | 'communities' | 'videos'
 type Event = { id: string; name: string; date: string; location: string; color: string }
@@ -22,7 +22,9 @@ const emptyVideo = (): Omit<Video, 'id'> => ({ title: '', speaker: '', date: '',
 
 export default function AdminPage() {
   const router = useRouter()
-  const [authorized, setAuthorized] = useState<boolean | null>(null)
+  const [unlocked, setUnlocked] = useState(false)
+  const [pw, setPw] = useState('')
+  const [pwError, setPwError] = useState(false)
   const [tab, setTab] = useState<Tab>('events')
   const [events, setEvents] = useState<Event[]>([])
   const [communities, setCommunities] = useState<Community[]>([])
@@ -34,21 +36,47 @@ export default function AdminPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.user || session.user.email !== ADMIN_EMAIL) {
-        setAuthorized(false)
-        router.replace('/')
-      } else {
-        setAuthorized(true)
-        supabase.from('events').select('*').order('created_at').then(({ data }) => data && setEvents(data))
-        supabase.from('communities').select('*').order('created_at').then(({ data }) => data && setCommunities(data))
-        supabase.from('videos').select('*').order('created_at').then(({ data }) => data && setVideos(data))
-      }
-    })
-  }, [router])
+    if (sessionStorage.getItem('admin_unlocked') === 'true') unlock()
+  }, [])
 
-  if (authorized === null) return <div style={{ minHeight: '100vh', background: '#07090e' }} />
-  if (!authorized) return null
+  const unlock = () => {
+    setUnlocked(true)
+    supabase.from('events').select('*').order('created_at').then(({ data }) => data && setEvents(data))
+    supabase.from('communities').select('*').order('created_at').then(({ data }) => data && setCommunities(data))
+    supabase.from('videos').select('*').order('created_at').then(({ data }) => data && setVideos(data))
+  }
+
+  const handlePassword = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (pw === ADMIN_PASSWORD) {
+      sessionStorage.setItem('admin_unlocked', 'true')
+      unlock()
+    } else {
+      setPwError(true)
+      setPw('')
+    }
+  }
+
+  if (!unlocked) return (
+    <div style={{ minHeight: '100vh', background: '#07090e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <form onSubmit={handlePassword} style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 320 }}>
+        <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 800, fontFamily: 'Helvetica Neue, sans-serif', letterSpacing: '-0.5px', marginBottom: 4 }}>Admin Access</h1>
+        <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14, fontFamily: 'Helvetica Neue, sans-serif', marginBottom: 8 }}>Enter the admin password to continue.</p>
+        <input
+          type="password"
+          placeholder="Password"
+          value={pw}
+          onChange={e => { setPw(e.target.value); setPwError(false) }}
+          autoFocus
+          style={{ background: 'rgba(255,255,255,.06)', border: `1px solid ${pwError ? 'rgba(248,113,113,.5)' : 'rgba(255,255,255,.1)'}`, borderRadius: 10, padding: '12px 14px', color: '#fff', fontSize: 14, fontFamily: 'Helvetica Neue, sans-serif', outline: 'none' }}
+        />
+        {pwError && <p style={{ color: 'rgba(248,113,113,.9)', fontSize: 13, fontFamily: 'Helvetica Neue, sans-serif' }}>Incorrect password.</p>}
+        <button type="submit" style={{ background: '#fff', border: 'none', borderRadius: 10, padding: '12px', color: '#0d0f12', fontSize: 14, fontWeight: 700, fontFamily: 'Helvetica Neue, sans-serif', cursor: 'pointer' }}>
+          Enter →
+        </button>
+      </form>
+    </div>
+  )
 
   const saveEvent = async () => {
     if (!editingEvent) return
@@ -108,7 +136,10 @@ export default function AdminPage() {
           <h1 className={styles.title}>Admin</h1>
           <p className={styles.sub}>mrktr.club content management</p>
         </div>
-        <button className={styles.backBtn} onClick={() => router.push('/dashboard')}>← Dashboard</button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className={styles.backBtn} onClick={() => router.push('/dashboard')}>← Dashboard</button>
+          <button className={styles.backBtn} onClick={() => { sessionStorage.removeItem('admin_unlocked'); setUnlocked(false) }}>Lock</button>
+        </div>
       </div>
 
       <div className={styles.tabs}>
