@@ -120,7 +120,10 @@
 
 .sidebarBannerOverlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -1px;
   background: linear-gradient(to top, rgba(13,17,23,.9) 0%, transparent 100%);
   pointer-events: none;
 }
