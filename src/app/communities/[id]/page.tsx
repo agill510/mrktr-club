@@ -57,7 +57,22 @@ function fmtLastActive(iso: string) {
 }
 
 // ── User Profile Card ────────────────────────────────────
-function UserProfileCard({ userId, onClose }: { userId: string; onClose: () => void }) {
+const CARD_W = 300
+const CARD_H = 360
+
+function getCardPos(anchor: DOMRect) {
+  // Try right of anchor; fall back to left if it would overflow
+  let left = anchor.right + 10
+  if (left + CARD_W > window.innerWidth - 8) left = anchor.left - CARD_W - 10
+  left = Math.max(8, left)
+  // Align top with anchor, clamped to viewport
+  let top = anchor.top
+  if (top + CARD_H > window.innerHeight - 8) top = window.innerHeight - CARD_H - 8
+  top = Math.max(8, top)
+  return { left, top }
+}
+
+function UserProfileCard({ userId, anchor, onClose }: { userId: string; anchor: DOMRect; onClose: () => void }) {
   const [profile,  setProfile]  = useState<{ name: string; username?: string; avatar_url?: string; banner_url?: string; banner_position_y?: number; bio?: string } | null>(null)
   const [presence, setPresence] = useState<{ is_online: boolean; last_seen: string } | null>(null)
   const [imgFailed, setImgFailed] = useState(false)
@@ -78,9 +93,14 @@ function UserProfileCard({ userId, onClose }: { userId: string; onClose: () => v
     ? { backgroundImage: `url(${profile.banner_url})`, backgroundSize: 'cover', backgroundPosition: `center ${profile.banner_position_y ?? 50}%` }
     : undefined
 
+  const { left, top } = getCardPos(anchor)
+
   return (
-    <div className={styles.profileOverlay} onClick={onClose}>
-      <div className={styles.profileCard} onClick={e => e.stopPropagation()}>
+    <>
+      {/* Invisible backdrop — click anywhere outside to close */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 299 }} onClick={onClose} />
+
+      <div className={styles.profileCard} style={{ position: 'fixed', left, top, zIndex: 300 }} onClick={e => e.stopPropagation()}>
         <div className={styles.profileCardBanner} style={bannerStyle} />
         <button className={styles.profileCardCloseBtn} onClick={onClose}>✕</button>
 
@@ -116,7 +136,7 @@ function UserProfileCard({ userId, onClose }: { userId: string; onClose: () => v
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -148,7 +168,7 @@ function CommunityInner() {
   const [rightExpanded,  setRightExpanded]  = useState(true)
   const [unreadMentions, setUnreadMentions] = useState(0)
   const [hoveredMember,  setHoveredMember]  = useState<Member | null>(null)
-  const [viewingProfile, setViewingProfile] = useState<string | null>(null)
+  const [viewingProfile, setViewingProfile] = useState<{ userId: string; anchor: DOMRect } | null>(null)
   const [myProfile,      setMyProfile]      = useState<Profile | null>(null)
   const [uploading,      setUploading]      = useState(false)
   const attachRef = useRef<HTMLInputElement>(null)
@@ -585,13 +605,13 @@ function CommunityInner() {
                     return (
                       <div key={msg.id} className={`${styles.msgRow} ${grouped ? styles.msgGrouped : ''}`}>
                         {!grouped && (
-                          <div className={`${styles.msgAvatar} ${styles.clickable}`} onClick={() => setViewingProfile(msg.user_id)}><Avatar profile={msg.profiles} /></div>
+                          <div className={`${styles.msgAvatar} ${styles.clickable}`} onClick={e => setViewingProfile({ userId: msg.user_id, anchor: (e.currentTarget as HTMLElement).getBoundingClientRect() })}><Avatar profile={msg.profiles} /></div>
                         )}
                         {grouped && <div className={styles.msgAvatarSpacer} />}
                         <div className={styles.msgContent}>
                           {!grouped && (
                             <div className={styles.msgMeta}>
-                              <span className={`${styles.msgUsername} ${styles.clickable}`} onClick={() => setViewingProfile(msg.user_id)}>{msg.profiles?.name || 'Unknown'}</span>
+                              <span className={`${styles.msgUsername} ${styles.clickable}`} onClick={e => setViewingProfile({ userId: msg.user_id, anchor: (e.currentTarget as HTMLElement).getBoundingClientRect() })}>{msg.profiles?.name || 'Unknown'}</span>
                               {msg.profiles?.username && <span className={styles.msgHandle}>@{msg.profiles.username}</span>}
                               <span className={styles.msgTime}>{fmt(msg.created_at)}</span>
                             </div>
@@ -691,7 +711,7 @@ function CommunityInner() {
                     <>
                       <p className={styles.memberGroupLabel}>ONLINE — {onlineMembers.length}</p>
                       {onlineMembers.map(m => (
-                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={setViewingProfile} />
+                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={(uid, rect) => setViewingProfile({ userId: uid, anchor: rect })} />
                       ))}
                     </>
                   )}
@@ -699,7 +719,7 @@ function CommunityInner() {
                     <>
                       <p className={styles.memberGroupLabel}>OFFLINE — {offlineMembers.length}</p>
                       {offlineMembers.map(m => (
-                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={setViewingProfile} />
+                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={(uid, rect) => setViewingProfile({ userId: uid, anchor: rect })} />
                       ))}
                     </>
                   )}
@@ -707,7 +727,7 @@ function CommunityInner() {
               ) : (
                 <div className={styles.compactAvatars}>
                   {filteredMembers.slice(0, 20).map(m => (
-                    <div key={m.id} className={styles.compactMember} title={m.profiles?.name} onClick={() => setViewingProfile(m.user_id)}>
+                    <div key={m.id} className={styles.compactMember} title={m.profiles?.name} onClick={e => setViewingProfile({ userId: m.user_id, anchor: (e.currentTarget as HTMLElement).getBoundingClientRect() })}>
                       <Avatar profile={m.profiles} size={28} />
                       <span className={`${styles.presenceDot} ${m.is_online ? styles.dotOnline : styles.dotOffline}`} />
                     </div>
@@ -722,7 +742,7 @@ function CommunityInner() {
       )}
 
       {viewingProfile && (
-        <UserProfileCard userId={viewingProfile} onClose={() => setViewingProfile(null)} />
+        <UserProfileCard userId={viewingProfile.userId} anchor={viewingProfile.anchor} onClose={() => setViewingProfile(null)} />
       )}
     </div>
   )
@@ -730,7 +750,7 @@ function CommunityInner() {
 
 function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate, onViewProfile }: {
   member: Member; hovered: boolean; onHover: (m: Member | null) => void
-  myRole: string; communityId: string; onUpdate: () => void; onViewProfile: (userId: string) => void
+  myRole: string; communityId: string; onUpdate: () => void; onViewProfile: (userId: string, rect: DOMRect) => void
 }) {
   const isAdmin = myRole === 'admin'
 
@@ -745,7 +765,7 @@ function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate, on
   }
 
   return (
-    <div className={styles.memberRow} onClick={() => onViewProfile(member.user_id)} onMouseEnter={() => onHover(member)} onMouseLeave={() => onHover(null)}>
+    <div className={styles.memberRow} onClick={e => onViewProfile(member.user_id, (e.currentTarget as HTMLElement).getBoundingClientRect())} onMouseEnter={() => onHover(member)} onMouseLeave={() => onHover(null)}>
       <div className={styles.memberAvatarWrap}>
         <Avatar profile={member.profiles} size={32} />
         <span className={`${styles.presenceDot} ${member.is_online ? styles.dotOnline : styles.dotOffline}`} />
