@@ -110,6 +110,13 @@ function DashboardInner() {
     if (!authLoading) setBlurVisible(false)
   }, [authLoading])
 
+  // If user is logged in but never picked a username, prompt them
+  useEffect(() => {
+    if (authLoading || !user) return
+    supabase.from('profiles').select('username').eq('id', user.id).maybeSingle()
+      .then(({ data }) => { if (data && !data.username) setShowUsernameModal(true) })
+  }, [authLoading, user])
+
   // Remove filter entirely once transition ends — keeps position:fixed children
   // (ProfileModal etc.) out of the filter stacking context
   useEffect(() => {
