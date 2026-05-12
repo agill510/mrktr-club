@@ -121,7 +121,7 @@
 .sidebarBannerOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(13,17,23,.92) 0%, rgba(0,0,0,.35) 60%, rgba(0,0,0,.1) 100%);
+  background: linear-gradient(to top, rgba(13,17,23,.9) 0%, transparent 100%);
   pointer-events: none;
 }
 
