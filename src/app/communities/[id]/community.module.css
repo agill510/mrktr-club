@@ -384,7 +384,159 @@
 .kickBtn:hover { background: rgba(248,113,113,.08); color: rgba(248,113,113,1); }
 
 .compactAvatars { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0; }
-.compactMember  { position: relative; cursor: default; }
+.compactMember  { position: relative; cursor: pointer; }
+
+/* ── USER PROFILE CARD ── */
+.profileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.profileCard {
+  width: 320px;
+  background: #111827;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  animation: cardUp .18s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes cardUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
+
+.profileCardBanner {
+  height: 96px;
+  background: linear-gradient(135deg, #0c4d3d 0%, #12af82 100%);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.profileCardCloseBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,.45);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  color: rgba(255,255,255,.75);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background .15s;
+}
+.profileCardCloseBtn:hover { background: rgba(0,0,0,.7); color: #fff; }
+
+.profileCardAvatarRow {
+  padding: 0 20px;
+  margin-top: -36px;
+  position: relative;
+  z-index: 1;
+}
+.profileCardAvatarWrap {
+  position: relative;
+  display: inline-block;
+}
+.profileCardAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #111827;
+  object-fit: cover;
+  display: block;
+}
+.profileCardAvatarInitial {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #111827;
+  background: rgba(18,175,130,.2);
+  color: rgba(18,175,130,1);
+  font-size: 26px;
+  font-weight: 800;
+  font-family: 'Helvetica Neue', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profileCardPresenceDot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid #111827;
+}
+.profileCardDotOnline  { background: #34d399; }
+.profileCardDotOffline { background: rgba(255,255,255,.25); }
+
+.profileCardBody { padding: 10px 20px 22px; }
+
+.profileCardName {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+  letter-spacing: -.4px;
+  margin-top: 8px;
+  line-height: 1.2;
+}
+.profileCardHandle {
+  font-size: 13px;
+  color: rgba(255,255,255,.4);
+  font-family: 'Helvetica Neue', sans-serif;
+  margin-top: 3px;
+}
+.profileCardBio {
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  font-family: 'Helvetica Neue', sans-serif;
+  line-height: 1.55;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.profileCardStatus {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.profileCardStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.profileCardStatusText {
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  font-family: 'Helvetica Neue', sans-serif;
+}
+.profileCardLoading {
+  padding: 28px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* clickable avatars/names in messages */
+.clickable { cursor: pointer; }
+.clickable:hover { opacity: .75; }
 
 /* ── SCROLLBAR ── */
 .messages::-webkit-scrollbar,

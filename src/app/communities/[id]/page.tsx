@@ -44,6 +44,82 @@ function Avatar({ profile, size = 32 }: { profile?: Profile; size?: number }) {
   return <div className={styles.avatarInitial} style={{ width: size, height: size, fontSize: size * 0.4 }}>{initial}</div>
 }
 
+// ── Helpers ──────────────────────────────────────────────
+function fmtLastActive(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60000)
+  const hrs  = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+  if (mins < 1)  return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hrs  < 24) return `${hrs}h ago`
+  return `${days}d ago`
+}
+
+// ── User Profile Card ────────────────────────────────────
+function UserProfileCard({ userId, onClose }: { userId: string; onClose: () => void }) {
+  const [profile,  setProfile]  = useState<{ name: string; username?: string; avatar_url?: string; banner_url?: string; banner_position_y?: number; bio?: string } | null>(null)
+  const [presence, setPresence] = useState<{ is_online: boolean; last_seen: string } | null>(null)
+  const [imgFailed, setImgFailed] = useState(false)
+
+  useEffect(() => {
+    Promise.all([
+      supabase.from('profiles').select('name, username, avatar_url, banner_url, banner_position_y, bio').eq('id', userId).single(),
+      supabase.from('user_presence').select('is_online, last_seen').eq('user_id', userId).maybeSingle(),
+    ]).then(([{ data: prof }, { data: pres }]) => {
+      setProfile(prof)
+      setPresence(pres)
+    })
+  }, [userId])
+
+  const isOnline = !!(presence?.is_online && presence.last_seen && new Date(presence.last_seen).getTime() > Date.now() - 60000)
+
+  const bannerStyle = profile?.banner_url
+    ? { backgroundImage: `url(${profile.banner_url})`, backgroundSize: 'cover', backgroundPosition: `center ${profile.banner_position_y ?? 50}%` }
+    : undefined
+
+  return (
+    <div className={styles.profileOverlay} onClick={onClose}>
+      <div className={styles.profileCard} onClick={e => e.stopPropagation()}>
+        <div className={styles.profileCardBanner} style={bannerStyle} />
+        <button className={styles.profileCardCloseBtn} onClick={onClose}>✕</button>
+
+        <div className={styles.profileCardAvatarRow}>
+          <div className={styles.profileCardAvatarWrap}>
+            {profile?.avatar_url && !imgFailed
+              ? <Image src={profile.avatar_url} alt={profile.name} width={72} height={72} className={styles.profileCardAvatar} onError={() => setImgFailed(true)} />
+              : <div className={styles.profileCardAvatarInitial}>{(profile?.name || '?').charAt(0).toUpperCase()}</div>
+            }
+            <span className={`${styles.profileCardPresenceDot} ${isOnline ? styles.profileCardDotOnline : styles.profileCardDotOffline}`} />
+          </div>
+        </div>
+
+        <div className={styles.profileCardBody}>
+          {profile ? (
+            <>
+              <p className={styles.profileCardName}>{profile.name || 'Unknown'}</p>
+              {profile.username && <p className={styles.profileCardHandle}>@{profile.username}</p>}
+              {profile.bio && <p className={styles.profileCardBio}>{profile.bio}</p>}
+              <div className={styles.profileCardStatus}>
+                <span className={`${styles.profileCardStatusDot} ${isOnline ? styles.profileCardDotOnline : styles.profileCardDotOffline}`} />
+                <span className={styles.profileCardStatusText}>
+                  {isOnline
+                    ? 'Online'
+                    : presence?.last_seen
+                      ? `Last active ${fmtLastActive(presence.last_seen)}`
+                      : 'Offline'}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className={styles.profileCardLoading}><div className={styles.spinnerSm} /></div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Page ─────────────────────────────────────────────
 function CommunityInner() {
   const { id } = useParams() as { id: string }
@@ -72,6 +148,7 @@ function CommunityInner() {
   const [rightExpanded,  setRightExpanded]  = useState(true)
   const [unreadMentions, setUnreadMentions] = useState(0)
   const [hoveredMember,  setHoveredMember]  = useState<Member | null>(null)
+  const [viewingProfile, setViewingProfile] = useState<string | null>(null)
   const [myProfile,      setMyProfile]      = useState<Profile | null>(null)
   const [uploading,      setUploading]      = useState(false)
   const attachRef = useRef<HTMLInputElement>(null)
@@ -508,13 +585,13 @@ function CommunityInner() {
                     return (
                       <div key={msg.id} className={`${styles.msgRow} ${grouped ? styles.msgGrouped : ''}`}>
                         {!grouped && (
-                          <div className={styles.msgAvatar}><Avatar profile={msg.profiles} /></div>
+                          <div className={`${styles.msgAvatar} ${styles.clickable}`} onClick={() => setViewingProfile(msg.user_id)}><Avatar profile={msg.profiles} /></div>
                         )}
                         {grouped && <div className={styles.msgAvatarSpacer} />}
                         <div className={styles.msgContent}>
                           {!grouped && (
                             <div className={styles.msgMeta}>
-                              <span className={styles.msgUsername}>{msg.profiles?.name || 'Unknown'}</span>
+                              <span className={`${styles.msgUsername} ${styles.clickable}`} onClick={() => setViewingProfile(msg.user_id)}>{msg.profiles?.name || 'Unknown'}</span>
                               {msg.profiles?.username && <span className={styles.msgHandle}>@{msg.profiles.username}</span>}
                               <span className={styles.msgTime}>{fmt(msg.created_at)}</span>
                             </div>
@@ -614,7 +691,7 @@ function CommunityInner() {
                     <>
                       <p className={styles.memberGroupLabel}>ONLINE — {onlineMembers.length}</p>
                       {onlineMembers.map(m => (
-                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} />
+                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={setViewingProfile} />
                       ))}
                     </>
                   )}
@@ -622,7 +699,7 @@ function CommunityInner() {
                     <>
                       <p className={styles.memberGroupLabel}>OFFLINE — {offlineMembers.length}</p>
                       {offlineMembers.map(m => (
-                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} />
+                        <MemberRow key={m.id} member={m} hovered={hoveredMember?.id === m.id} onHover={setHoveredMember} myRole={myRole} communityId={id} onUpdate={() => {}} onViewProfile={setViewingProfile} />
                       ))}
                     </>
                   )}
@@ -630,7 +707,7 @@ function CommunityInner() {
               ) : (
                 <div className={styles.compactAvatars}>
                   {filteredMembers.slice(0, 20).map(m => (
-                    <div key={m.id} className={styles.compactMember} title={m.profiles?.name}>
+                    <div key={m.id} className={styles.compactMember} title={m.profiles?.name} onClick={() => setViewingProfile(m.user_id)}>
                       <Avatar profile={m.profiles} size={28} />
                       <span className={`${styles.presenceDot} ${m.is_online ? styles.dotOnline : styles.dotOffline}`} />
                     </div>
@@ -643,13 +720,17 @@ function CommunityInner() {
         </div>
         </div>
       )}
+
+      {viewingProfile && (
+        <UserProfileCard userId={viewingProfile} onClose={() => setViewingProfile(null)} />
+      )}
     </div>
   )
 }
 
-function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate }: {
+function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate, onViewProfile }: {
   member: Member; hovered: boolean; onHover: (m: Member | null) => void
-  myRole: string; communityId: string; onUpdate: () => void
+  myRole: string; communityId: string; onUpdate: () => void; onViewProfile: (userId: string) => void
 }) {
   const isAdmin = myRole === 'admin'
 
@@ -664,7 +745,7 @@ function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate }: 
   }
 
   return (
-    <div className={styles.memberRow} onMouseEnter={() => onHover(member)} onMouseLeave={() => onHover(null)}>
+    <div className={styles.memberRow} onClick={() => onViewProfile(member.user_id)} onMouseEnter={() => onHover(member)} onMouseLeave={() => onHover(null)}>
       <div className={styles.memberAvatarWrap}>
         <Avatar profile={member.profiles} size={32} />
         <span className={`${styles.presenceDot} ${member.is_online ? styles.dotOnline : styles.dotOffline}`} />
@@ -678,7 +759,7 @@ function MemberRow({ member, hovered, onHover, myRole, communityId, onUpdate }: 
         {member.is_muted && <span className={styles.mutedBadge}>muted</span>}
       </div>
       {hovered && isAdmin && (
-        <div className={styles.memberActions}>
+        <div className={styles.memberActions} onClick={e => e.stopPropagation()}>
           <button className={styles.memberActionBtn} onClick={mute}>{member.is_muted ? 'Unmute' : 'Mute'}</button>
           <button className={`${styles.memberActionBtn} ${styles.kickBtn}`} onClick={kick}>Kick</button>
         </div>
