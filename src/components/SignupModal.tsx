@@ -145,17 +145,23 @@ export default function SignupModal({ open, onClose }: Props) {
               setSignupError('')
               setSubmitting(true)
 
+              const fullName = `${firstName} ${lastName}`.trim()
               const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: 'https://www.mrktr.club/auth/callback' },
+                options: {
+                  emailRedirectTo: 'https://www.mrktr.club/auth/callback',
+                  data: { full_name: fullName },
+                },
               })
               if (error) { setSignupError(error.message); setSubmitting(false); return }
 
-              if (data.user) {
-                await supabase.from('profiles').insert({
+              // Only insert immediately if the user already has a session
+              // (email confirmation disabled). Otherwise the callback handles it.
+              if (data.user && data.session) {
+                await supabase.from('profiles').upsert({
                   id:    data.user.id,
-                  name:  `${firstName} ${lastName}`.trim(),
+                  name:  fullName,
                   email: email,
                 })
               }
@@ -163,7 +169,7 @@ export default function SignupModal({ open, onClose }: Props) {
               setSubmitting(false)
               if (data.session) {
                 onClose()
-                router.push('/dashboard')
+                router.push('/home')
               } else {
                 go(3, 'forward')
               }

@@ -1,12 +1,12 @@
 import styles from '../terms/terms.module.css'
 
-export const metadata = { title: 'Privacy Policy — mrkt.ee' }
+export const metadata = { title: 'Privacy Policy — mrktr.club' }
 
 export default function Privacy() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <a href="/" className={styles.back}>← mrkt.ee</a>
+        <a href="/" className={styles.back}>← mrktr.club</a>
         <h1 className={styles.title}>Privacy Policy</h1>
         <p className={styles.updated}>Last updated: May 2026</p>
 
@@ -17,7 +17,7 @@ export default function Privacy() {
 
         <section className={styles.section}>
           <h2>2. How We Use It</h2>
-          <p>We use your information to manage your access to mrkt.ee, send you community updates and event invites, and improve the platform experience. We will never send you spam.</p>
+          <p>We use your information to manage your access to mrktr.club, send you community updates and event invites, and improve the platform experience. We will never send you spam.</p>
         </section>
 
         <section className={styles.section}>
@@ -37,7 +37,7 @@ export default function Privacy() {
 
         <section className={styles.section}>
           <h2>6. Cookies</h2>
-          <p>mrkt.ee uses minimal cookies necessary for the platform to function. We do not use tracking or advertising cookies.</p>
+          <p>mrktr.club uses minimal cookies necessary for the platform to function. We do not use tracking or advertising cookies.</p>
         </section>
 
         <section className={styles.section}>

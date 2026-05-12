@@ -24,8 +24,8 @@ export async function POST(req: Request) {
         <p style="color:rgba(255,255,255,0.6);font-size:15px;line-height:1.6;margin-bottom:32px;">
           Hey ${first_name}, thanks for signing up! We're building a private community for marketing students and professionals. We'll review your application and be in touch soon.
         </p>
-        <a href="https://mrktr.club" style="display:inline-block;background:#fff;color:#000;font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none;">
-          Visit mrktr.club
+        <a href="https://mrktr.club/home?welcome=true" style="display:inline-block;background:#fff;color:#000;font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none;">
+          Enter mrktr.club →
         </a>
         <p style="color:rgba(255,255,255,0.3);font-size:12px;margin-top:40px;">You're receiving this because you signed up at mrktr.club.</p>
       </div>

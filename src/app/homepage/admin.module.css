@@ -137,6 +137,84 @@
   transition: border-color .15s;
 }
 .field input:focus, .field select:focus { border-color: rgba(255,255,255,.3); }
+
+.channelSection {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 18px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.channelSectionTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin-bottom: 4px;
+}
+
+.channelRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.channelInput {
+  flex: 1;
+  min-width: 100px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 7px;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  outline: none;
+}
+.channelInput:focus { border-color: rgba(255,255,255,.3); }
+
+.channelChip {
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: rgba(255,255,255,.06);
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.channelPrivateLabel {
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.textarea {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  outline: none;
+  resize: vertical;
+  transition: border-color .15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.textarea:focus { border-color: rgba(255,255,255,.3); }
+.textarea::placeholder { color: rgba(255,255,255,.2); }
 .field input::placeholder { color: rgba(255,255,255,.2); }
 .field select { appearance: none; cursor: pointer; }
 .field select option { background: #1a1f2e; }
@@ -258,4 +336,109 @@
   color: rgba(255,255,255,.2);
   font-style: italic;
   padding: 32px !important;
+}
+
+/* ── SKELETON LOADER ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeletonWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+.skeletonRow:last-child { border-bottom: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.skeletonCell {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.06) 0%,
+    rgba(255,255,255,.12) 40%,
+    rgba(255,255,255,.06) 100%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  flex-shrink: 0;
+}
+
+/* ── IMAGE PREVIEWS & THUMBNAILS ── */
+.imgPreview {
+  margin-top: 8px;
+  height: 140px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.imgPreviewWide {
+  margin-top: 8px;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.logoPreview {
+  margin-top: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.1);
+  display: block;
+}
+
+.thumbCell {
+  width: 52px;
+  height: 34px;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255,255,255,.06);
+}
+
+.thumbWide {
+  width: 72px;
+  height: 40px;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255,255,255,.06);
+}
+
+.thumbLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.noImg {
+  color: rgba(255,255,255,.2);
+  font-size: 13px;
 }

@@ -1,0 +1,177 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+  animation: fadeIn .2s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: #111827;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 24px;
+  padding: 40px 36px 36px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  animation: slideUp .25s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,.07);
+  border: none;
+  color: rgba(255,255,255,.4);
+  font-size: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.close:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+.eventLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 6px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.5px;
+  margin-bottom: 4px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.25;
+}
+
+.meta {
+  font-size: 13px;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 28px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.form { display: flex; flex-direction: column; gap: 14px; }
+
+.row { display: flex; gap: 12px; }
+.row .field { flex: 1; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.field input {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.field input::placeholder { color: rgba(255,255,255,.2); }
+.field input:focus { border-color: rgba(255,255,255,.3); }
+
+.cta {
+  width: 100%;
+  margin-top: 4px;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #fff;
+  color: #0d0f12;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  transition: background .2s, transform .15s;
+}
+.cta:hover:not(:disabled) { background: #ebebeb; transform: translateY(-1px); }
+.cta:disabled { opacity: .35; cursor: default; transform: none; }
+
+.error {
+  font-size: 13px;
+  color: rgba(248,113,113,.9);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Success state */
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 0 4px;
+  gap: 12px;
+}
+
+.checkWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(52,211,153,.12);
+  border: 1.5px solid rgba(52,211,153,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.successTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.5px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.successSub {
+  font-size: 14px;
+  color: rgba(255,255,255,.4);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.successSub strong { color: rgba(255,255,255,.7); font-weight: 600; }

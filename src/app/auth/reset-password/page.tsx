@@ -22,7 +22,7 @@ export default function ResetPassword() {
     setLoading(false)
 
     if (err) { setError(err.message); return }
-    router.replace('/dashboard')
+    router.replace('/home')
   }
 
   return (

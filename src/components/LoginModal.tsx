@@ -20,7 +20,7 @@ export default function LoginModal({ open, onClose }: Props) {
   const [loading, setLoading]   = useState(false)
 
   useEffect(() => {
-    if (open && user) { onClose(); router.push('/dashboard') }
+    if (open && user) { onClose(); router.push('/home') }
   }, [open, user, onClose, router])
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function LoginModal({ open, onClose }: Props) {
             setLoading(false)
             if (err) { setError(err.message); return }
             onClose()
-            router.push('/dashboard')
+            router.push('/home')
           }}>
           <div className={styles.field}>
             <label>Email</label>

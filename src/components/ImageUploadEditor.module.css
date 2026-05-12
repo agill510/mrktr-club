@@ -1,0 +1,113 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  position: relative;
+  user-select: none;
+  background-size: cover;
+  background-position: center;
+}
+
+.grab    { cursor: grab; }
+.grabbing { cursor: grabbing; }
+
+/* Progress bar */
+.progressTrack {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,.15);
+  z-index: 10;
+}
+
+.progressBar {
+  height: 100%;
+  background: #fff;
+  border-radius: 0 2px 2px 0;
+  transition: width 0.12s ease-out;
+}
+
+.progressDone {
+  background: #34d399;
+  transition: width 0.1s ease-out, background 0.2s;
+}
+
+/* Upload overlay — hidden until hover */
+.hoverZone {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0,0,0,.45);
+  opacity: 0;
+  transition: opacity .18s;
+  backdrop-filter: blur(2px);
+}
+.card:hover .hoverZone { opacity: 1; }
+
+.uploadBtn {
+  background: rgba(255,255,255,.92);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #0d0f12;
+  cursor: pointer;
+  transition: background .15s;
+  pointer-events: all;
+}
+.uploadBtn:hover:not(:disabled) { background: #fff; }
+.uploadBtn:disabled { opacity: .5; cursor: default; }
+
+.hint {
+  font-size: 11px;
+  color: rgba(255,255,255,.65);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  pointer-events: none;
+}
+
+/* Zoom slider row */
+.zoomRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zoomLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.3);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+
+.zoomSlider {
+  flex: 1;
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+.zoomValue {
+  font-size: 11px;
+  color: rgba(255,255,255,.3);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  width: 38px;
+  text-align: right;
+}

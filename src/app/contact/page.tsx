@@ -10,7 +10,7 @@ export default function Contact() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <a href="/" className={styles.back}>← mrkt.ee</a>
+        <a href="/" className={styles.back}>← mrktr.club</a>
         <h1 className={styles.title}>Contact</h1>
         <p className={styles.updated}>We typically respond within 24 hours.</p>
 

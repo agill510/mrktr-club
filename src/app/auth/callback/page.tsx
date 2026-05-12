@@ -8,17 +8,42 @@ export default function AuthCallback() {
   const router = useRouter()
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    let handled = false
+
+    const proceed = async (session: { user: { id: string; email?: string; user_metadata?: Record<string, string> } }) => {
+      if (handled) return
+      handled = true
+
+      const hash = window.location.hash
+      const type = hash ? new URLSearchParams(hash.slice(1)).get('type') : null
+
+      if (type === 'signup') {
+        const fullName = session.user.user_metadata?.full_name ?? ''
+        await supabase.from('profiles').upsert({
+          id:    session.user.id,
+          name:  fullName,
+          email: session.user.email ?? '',
+        })
+        router.replace('/home?welcome=true&setup=username')
+      } else {
+        router.replace('/home')
+      }
+    }
+
+    // Calling getSession() forces the Supabase client to process any
+    // #access_token hash in the URL (implicit flow in Next.js)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) proceed(session)
+    })
+
+    // Also listen for the state change in case the token exchange is async
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
+        handled = true
         router.replace('/auth/reset-password')
       } else if (event === 'SIGNED_IN' && session) {
-        const type = new URLSearchParams(window.location.hash.slice(1)).get('type')
-        if (type === 'signup') {
-          router.replace('/dashboard?welcome=true')
-        } else {
-          router.replace('/dashboard')
-        }
-      } else if (!session) {
+        proceed(session)
+      } else if (event === 'SIGNED_OUT' && !handled) {
         router.replace('/')
       }
     })

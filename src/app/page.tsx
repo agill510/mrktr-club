@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <>
-      <Header onRegister={() => setModalOpen(true)} onLogin={() => { if (user) { router.push('/dashboard'); return } setLoginOpen(true) }} />
+      <Header onRegister={() => setModalOpen(true)} onLogin={() => { if (user) { router.push('/home'); return } setLoginOpen(true) }} />
 
       <main>
         <div className={styles.hero}>

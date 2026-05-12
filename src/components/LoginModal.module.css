@@ -104,3 +104,10 @@
 }
 .cta:hover:not(:disabled) { background: #ebebeb; transform: translateY(-1px); }
 .cta:disabled { opacity: 0.3; cursor: default; }
+
+.error {
+  font-size: 13px;
+  color: rgba(248,113,113,.9);
+  text-align: center;
+  margin-top: 4px;
+}
