@@ -114,7 +114,7 @@ function DashboardInner() {
   useEffect(() => {
     if (authLoading || !user) return
     supabase.from('profiles').select('username').eq('id', user.id).maybeSingle()
-      .then(({ data }) => { if (data && !data.username) setShowUsernameModal(true) })
+      .then(({ data }) => { if (!data || !data.username) setShowUsernameModal(true) })
   }, [authLoading, user])
 
   // Remove filter entirely once transition ends — keeps position:fixed children

@@ -14,27 +14,24 @@ export default function AuthCallback() {
       if (handled) return
       handled = true
 
-      // Check if the user already has a profile (existing user) or not (new signup).
-      // We can't rely on the URL hash type=signup because Supabase v2 uses PKCE
-      // flow by default, which passes a ?code= param with no hash fragment.
-      const { data: existing } = await supabase
+      const fullName = session.user.user_metadata?.full_name ?? ''
+
+      // Always upsert so the name is saved regardless of whether a trigger
+      // pre-created the row with an empty name, or the row doesn't exist yet.
+      await supabase.from('profiles').upsert(
+        { id: session.user.id, name: fullName, email: session.user.email ?? '' },
+        { onConflict: 'id', ignoreDuplicates: false }
+      )
+
+      // Check if they've already picked a username
+      const { data: profile } = await supabase
         .from('profiles')
         .select('username')
         .eq('id', session.user.id)
         .maybeSingle()
 
-      if (!existing) {
-        // Brand new user — create profile and send to username setup
-        const fullName = session.user.user_metadata?.full_name ?? ''
-        await supabase.from('profiles').insert({
-          id:    session.user.id,
-          name:  fullName,
-          email: session.user.email ?? '',
-        })
+      if (!profile?.username) {
         router.replace('/home?welcome=true&setup=username')
-      } else if (!existing.username) {
-        // Profile exists but username was never set
-        router.replace('/home?setup=username')
       } else {
         router.replace('/home')
       }
