@@ -130,6 +130,7 @@ function CommunityInner() {
     if (!rows) return
 
     const userIds = rows.map(m => m.user_id)
+    if (userIds.length === 0) { setMembers([]); return }
     const [{ data: profs }, { data: presence }] = await Promise.all([
       supabase.from('profiles').select('id, name, username, avatar_url').in('id', userIds),
       supabase.from('user_presence').select('user_id, is_online, last_seen').in('user_id', userIds),
@@ -169,7 +170,9 @@ function CommunityInner() {
 
     // Fetch profiles for message authors
     const uids = [...new Set(rows.map(r => r.user_id))]
-    const { data: profs } = await supabase.from('profiles').select('id, name, username, avatar_url').in('id', uids)
+    const { data: profs } = uids.length
+      ? await supabase.from('profiles').select('id, name, username, avatar_url').in('id', uids)
+      : { data: [] }
     const profMap = Object.fromEntries((profs ?? []).map(p => [p.id, p]))
     const withProfiles = rows.map(r => ({ ...r, profiles: profMap[r.user_id] ?? null })).reverse()
 
