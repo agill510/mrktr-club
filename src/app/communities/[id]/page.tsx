@@ -544,12 +544,12 @@ function CommunityInner() {
           {/* Collapse handles sit on the dividing lines, vertically centered */}
           <button
             className={styles.collapseHandle}
-            style={{ left: leftExpanded ? 237 : 44 }}
+            style={{ left: leftExpanded ? 234 : 41 }}
             onClick={() => setLeftExpanded(e => !e)}
           >{leftExpanded ? '‹' : '›'}</button>
           <button
             className={styles.collapseHandle}
-            style={{ right: rightExpanded ? 237 : 44 }}
+            style={{ right: rightExpanded ? 234 : 41 }}
             onClick={() => setRightExpanded(e => !e)}
           >{rightExpanded ? '›' : '‹'}</button>
 
