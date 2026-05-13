@@ -110,7 +110,6 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,.06);
   flex-shrink: 0;
   overflow: hidden;
   background: linear-gradient(135deg, #0c4d3d 0%, #12af82 100%);
@@ -156,7 +155,7 @@
 }
 .collapseBtn:hover { background: rgba(255,255,255,.12); color: #fff; }
 
-.channelList { flex: 1; overflow-y: auto; padding: 8px 6px; }
+.channelList { flex: 1; overflow-y: auto; padding: 8px 6px; border-top: 1px solid rgba(255,255,255,.06); }
 .channelGroupLabel {
   font-size: 10px; font-weight: 700; color: rgba(255,255,255,.25);
   letter-spacing: .6px; padding: 8px 8px 4px;
