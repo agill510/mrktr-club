@@ -541,6 +541,18 @@ function CommunityInner() {
         <div className={styles.chatWrapper}>
         <div className={styles.layout}>
 
+          {/* Collapse handles sit on the dividing lines, vertically centered */}
+          <button
+            className={styles.collapseHandle}
+            style={{ left: leftExpanded ? 237 : 44 }}
+            onClick={() => setLeftExpanded(e => !e)}
+          >{leftExpanded ? '‹' : '›'}</button>
+          <button
+            className={styles.collapseHandle}
+            style={{ right: rightExpanded ? 237 : 44 }}
+            onClick={() => setRightExpanded(e => !e)}
+          >{rightExpanded ? '›' : '‹'}</button>
+
           {/* ── LEFT SIDEBAR ── */}
           <div className={`${styles.leftSidebar} ${leftExpanded ? styles.expanded : styles.collapsed}`}>
             <div
@@ -558,9 +570,6 @@ function CommunityInner() {
                   <p className={styles.communityHandle}>{community.handle}</p>
                 </div>
               )}
-              <button className={`${styles.collapseBtn} ${styles.collapseBtnBanner}`} onClick={() => setLeftExpanded(e => !e)}>
-                {leftExpanded ? '‹' : '›'}
-              </button>
             </div>
             <div className={styles.channelList}>
               <p className={styles.channelGroupLabel}>{leftExpanded ? 'CHANNELS' : '·'}</p>
@@ -690,19 +699,16 @@ function CommunityInner() {
 
           {/* ── RIGHT SIDEBAR ── */}
           <div className={`${styles.rightSidebar} ${rightExpanded ? styles.expanded : styles.collapsed}`}>
-            <div className={styles.sidebarHeader}>
-              <button className={styles.collapseBtn} onClick={() => setRightExpanded(e => !e)}>
-                {rightExpanded ? '›' : '‹'}
-              </button>
-              {rightExpanded && (
+            {rightExpanded && (
+              <div className={styles.sidebarHeader}>
                 <input
                   className={styles.memberSearch}
                   placeholder="Search members…"
                   value={memberSearch}
                   onChange={e => setMemberSearch(e.target.value)}
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             <div className={styles.memberList}>
               {rightExpanded ? (
